@@ -1,0 +1,130 @@
+dialog {
+  border: 1px solid var(--line-strong);
+  background: var(--bg-raise);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 0;
+  width: min(520px, calc(100vw - 32px));
+  box-shadow: var(--shadow);
+}
+
+#crop-dialog {
+  width: min(760px, calc(100vw - 32px));
+}
+
+dialog::backdrop {
+  background: rgba(10, 8, 6, 0.62);
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 8px;
+}
+
+.dialog-head h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.dialog-body {
+  padding: 8px 18px 18px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 18px 18px;
+}
+
+.crop-stage {
+  position: relative;
+  width: 100%;
+  height: min(58vh, 420px);
+  background: #0c0b0a;
+  overflow: hidden;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+.crop-stage img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  pointer-events: none;
+}
+
+.crop-rect {
+  position: absolute;
+  border: 1px solid #fff;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+  cursor: move;
+}
+
+.crop-rect span {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+}
+
+.crop-rect .n { top: -4px; left: 50%; margin-left: -4px; cursor: ns-resize; }
+.crop-rect .s { bottom: -4px; left: 50%; margin-left: -4px; cursor: ns-resize; }
+.crop-rect .e { right: -4px; top: 50%; margin-top: -4px; cursor: ew-resize; }
+.crop-rect .w { left: -4px; top: 50%; margin-top: -4px; cursor: ew-resize; }
+.crop-rect .nw { top: -4px; left: -4px; cursor: nwse-resize; }
+.crop-rect .ne { top: -4px; right: -4px; cursor: nesw-resize; }
+.crop-rect .sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+.crop-rect .se { bottom: -4px; right: -4px; cursor: nwse-resize; }
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.event-item {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  gap: 8px;
+  align-items: start;
+  background: var(--bg-input);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.event-item .mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.event-item h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.event-item p {
+  margin: 2px 0 0;
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.event-item .mini {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.empty-note {
+  color: var(--ink-faint);
+  font-size: 13px;
+  padding: 8px 0;
+}

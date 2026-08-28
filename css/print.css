@@ -1,0 +1,84 @@
+.print-root {
+  position: absolute;
+  left: -200vw;
+  top: 0;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}
+
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #app,
+  .toasts,
+  dialog,
+  .toolbar,
+  .rail,
+  .stage-caption {
+    display: none !important;
+  }
+
+  .print-root {
+    display: block !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto;
+    height: auto;
+    background: transparent;
+    pointer-events: auto;
+  }
+
+  .print-page,
+  .print-root .page {
+    box-shadow: none !important;
+    border: 0 !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    break-after: page;
+    page-break-after: always;
+    overflow: hidden !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-root .page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .print-root .fold-line,
+  .print-root .layer-empty,
+  .print-root .handle,
+  .print-root .text-box.is-selected {
+    display: none !important;
+  }
+
+  .print-root .text-box {
+    outline: none !important;
+    background: transparent !important;
+  }
+
+  .print-root .day-cell.is-today .day-num {
+    background: transparent !important;
+    color: inherit !important;
+    width: auto;
+    height: auto;
+  }
+}

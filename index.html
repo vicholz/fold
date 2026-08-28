@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fold — Hanging Calendar Designer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%231c1a17' width='32' height='32' rx='6'/%3E%3Cpath fill='%23f4eee4' d='M8 6h12l6 6v14H8z'/%3E%3Cpath fill='%23e0783d' d='M20 6v6h6'/%3E%3Cpath stroke='%232c261f' stroke-width='1.2' d='M8 16h18'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/toolbar.css" />
+  <link rel="stylesheet" href="css/controls.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+  <link rel="stylesheet" href="css/overlays.css" />
+  <link rel="stylesheet" href="css/modals.css" />
+  <link rel="stylesheet" href="css/print.css" />
+  <style id="dynamic-print-style"></style>
+</head>
+<body>
+  <div id="app">
+    <header class="toolbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#2a241c"/>
+          <path fill="#f4eee4" d="M8 7h12l6 6v13H8z"/>
+          <path fill="#e0783d" d="M20 7v6h6"/>
+          <path stroke="#2c261f" stroke-width="1.2" d="M8 17h18"/>
+        </svg>
+        <div class="brand-name">Fold<span>.</span></div>
+      </div>
+      <div class="toolbar-group">
+        <span class="toolbar-label">Year</span>
+        <input class="year-input" id="year-input" type="number" min="1900" max="2200" />
+      </div>
+      <div class="toolbar-group month-switch">
+        <button class="btn btn-icon" id="prev-month" type="button" aria-label="Previous month">‹</button>
+        <div class="month-label" id="month-label">January</div>
+        <button class="btn btn-icon" id="next-month" type="button" aria-label="Next month">›</button>
+      </div>
+      <div class="toolbar-spacer"></div>
+      <div class="toolbar-group">
+        <button class="btn" id="toolbar-ics" type="button">Import ICS</button>
+        <button class="btn" id="toolbar-add-event" type="button">Add event</button>
+      </div>
+      <div class="toolbar-group">
+        <button class="btn" id="load-project" type="button">Open</button>
+        <button class="btn" id="save-project" type="button">Save</button>
+        <button class="btn btn-primary" id="export-open" type="button">Print / PDF</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="rail rail-left">
+        <div class="rail-head">
+          <h2>Months</h2>
+          <div class="field">
+            <label for="page-size">Page size</label>
+            <select id="page-size"></select>
+          </div>
+          <div class="field">
+            <label for="week-start">Week starts</label>
+            <select id="week-start">
+              <option value="0">Sunday</option>
+              <option value="1">Monday</option>
+            </select>
+          </div>
+          <label class="checkbox"><input id="show-hole" type="checkbox" checked /> Hanging hole</label>
+        </div>
+        <div class="rail-body">
+          <div class="month-list" id="month-list"></div>
+        </div>
+      </aside>
+
+      <main class="stage-wrap">
+        <div class="stage-scroll">
+          <div class="page-fit" id="page-fit">
+            <div class="page-stage" id="page-stage">
+              <article class="page" id="page" data-size="tabloid" data-mode="photo"></article>
+            </div>
+          </div>
+        </div>
+        <div class="stage-caption" id="stage-caption"></div>
+      </main>
+
+      <aside class="rail rail-right">
+        <div class="tabs">
+          <button type="button" data-tab="photo" class="is-active">Photo</button>
+          <button type="button" data-tab="overlay">Overlay</button>
+          <button type="button" data-tab="calendar">Grid</button>
+          <button type="button" data-tab="events">Events</button>
+        </div>
+
+        <div class="rail-body" style="padding: 0">
+          <section class="panel-section is-active" data-section="photo">
+            <p class="help">Top half of the hanging page. Drag to reposition, scroll to zoom. Crop bakes a tighter frame.</p>
+            <div class="stack">
+              <label class="btn file-btn">Upload photo
+                <input id="photo-input" type="file" accept="image/*" />
+              </label>
+              <button class="btn" id="photo-crop" type="button">Crop image</button>
+              <button class="btn" id="photo-reset" type="button">Reset position</button>
+              <button class="btn btn-danger" id="photo-remove" type="button">Remove photo</button>
+            </div>
+            <div class="field" style="margin-top: 14px">
+              <span class="field-label">Scale</span>
+              <div class="slider-row">
+                <input id="photo-scale" type="range" min="1" max="3" step="0.01" />
+                <output id="photo-scale-val">1.00×</output>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label">Opacity</span>
+              <div class="slider-row">
+                <input id="photo-opacity" type="range" min="0" max="1" step="0.01" />
+                <output id="photo-opacity-val">100%</output>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section" data-section="overlay">
+            <p class="help">A wash and type layer for the photo or the calendar panel. Text can be dragged and resized.</p>
+            <div class="segmented">
+              <button type="button" data-overlay-target="top" class="is-active">Top</button>
+              <button type="button" data-overlay-target="bottom">Bottom</button>
+            </div>
+            <label class="checkbox"><input id="overlay-enabled" type="checkbox" /> Enable overlay wash</label>
+            <div class="field">
+              <label for="overlay-color">Wash color</label>
+              <input id="overlay-color" type="color" value="#1a1410" />
+            </div>
+            <div class="field">
+              <span class="field-label">Color opacity</span>
+              <div class="slider-row">
+                <input id="overlay-color-opacity" type="range" min="0" max="1" step="0.01" />
+                <output id="overlay-color-opacity-val">35%</output>
+              </div>
+            </div>
+            <div class="stack">
+              <label class="btn file-btn">Overlay image
+                <input id="overlay-image-input" type="file" accept="image/*" />
+              </label>
+              <button class="btn" id="overlay-image-remove" type="button">Remove overlay image</button>
+            </div>
+            <div class="field" style="margin-top: 12px">
+              <span class="field-label">Image opacity</span>
+              <div class="slider-row">
+                <input id="overlay-image-opacity" type="range" min="0" max="1" step="0.01" />
+                <output id="overlay-image-opacity-val">50%</output>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="add-text" type="button">Add text</button>
+            <p class="help" id="text-empty">Select a text box on the page, or add one.</p>
+            <div id="text-editor" hidden>
+              <div class="field">
+                <label for="text-content">Text</label>
+                <textarea id="text-content"></textarea>
+              </div>
+              <div class="field">
+                <label for="text-font">Font</label>
+                <select id="text-font"></select>
+              </div>
+              <div class="field">
+                <span class="field-label">Size</span>
+                <div class="slider-row">
+                  <input id="text-size" type="range" min="8" max="72" step="1" />
+                  <output id="text-size-val">28 pt</output>
+                </div>
+              </div>
+              <div class="format-row">
+                <button class="btn" id="text-bold" type="button">B</button>
+                <button class="btn" id="text-italic" type="button"><em>I</em></button>
+                <button class="btn" id="text-underline" type="button"><u>U</u></button>
+                <button class="btn" data-align="left" type="button">Left</button>
+                <button class="btn" data-align="center" type="button">Center</button>
+                <button class="btn" data-align="right" type="button">Right</button>
+              </div>
+              <div class="field">
+                <label for="text-color">Color</label>
+                <input id="text-color" type="color" />
+              </div>
+              <div class="field">
+                <span class="field-label">Text opacity</span>
+                <div class="slider-row">
+                  <input id="text-opacity" type="range" min="0" max="1" step="0.01" />
+                  <output id="text-opacity-val">100%</output>
+                </div>
+              </div>
+              <div class="field">
+                <span class="field-label">Letter spacing</span>
+                <input id="text-tracking" type="range" min="-2" max="12" step="0.5" />
+              </div>
+              <div class="field">
+                <label for="text-bg-color">Background color</label>
+                <input id="text-bg-color" type="color" value="#1a1410" />
+              </div>
+              <div class="field">
+                <span class="field-label">Background opacity</span>
+                <div class="slider-row">
+                  <input id="text-bg-color-opacity" type="range" min="0" max="1" step="0.01" />
+                  <output id="text-bg-color-opacity-val">0%</output>
+                </div>
+              </div>
+              <div class="stack">
+                <label class="btn file-btn">Text background image
+                  <input id="text-bg-image-input" type="file" accept="image/*" />
+                </label>
+                <button class="btn" id="text-bg-image-remove" type="button">Remove background image</button>
+              </div>
+              <div class="field" style="margin-top: 12px">
+                <span class="field-label">Image opacity</span>
+                <div class="slider-row">
+                  <input id="text-bg-image-opacity" type="range" min="0" max="1" step="0.01" />
+                  <output id="text-bg-image-opacity-val">100%</output>
+                </div>
+              </div>
+              <button class="btn btn-danger" id="text-delete" type="button">Delete text</button>
+            </div>
+          </section>
+
+          <section class="panel-section" data-section="calendar">
+            <p class="help">Image behind the month grid. Drag and zoom while this tab is open. Grid ink colors keep dates readable on busy photos.</p>
+            <div class="stack">
+              <label class="btn file-btn">Upload background
+                <input id="bg-input" type="file" accept="image/*" />
+              </label>
+              <button class="btn" id="bg-crop" type="button">Crop image</button>
+              <button class="btn" id="bg-reset" type="button">Reset position</button>
+              <button class="btn btn-danger" id="bg-remove" type="button">Remove background</button>
+            </div>
+            <div class="field" style="margin-top: 14px">
+              <span class="field-label">Scale</span>
+              <div class="slider-row">
+                <input id="bg-scale" type="range" min="1" max="3" step="0.01" />
+                <output id="bg-scale-val">1.00×</output>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field-label">Opacity</span>
+              <div class="slider-row">
+                <input id="bg-opacity" type="range" min="0" max="1" step="0.01" />
+                <output id="bg-opacity-val">100%</output>
+              </div>
+            </div>
+            <label class="checkbox"><input id="grid-title" type="checkbox" checked /> Show month title</label>
+            <label class="checkbox"><input id="grid-events" type="checkbox" checked /> Show event titles</label>
+            <div class="field-row">
+              <div class="field">
+                <label for="grid-title-color">Title</label>
+                <input id="grid-title-color" type="color" />
+              </div>
+              <div class="field">
+                <label for="grid-number-color">Dates</label>
+                <input id="grid-number-color" type="color" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="grid-weekend-color">Weekend</label>
+                <input id="grid-weekend-color" type="color" />
+              </div>
+              <div class="field">
+                <label for="grid-label-color">Weekdays</label>
+                <input id="grid-label-color" type="color" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="grid-line-color">Grid lines</label>
+              <input id="grid-line-color" type="color" />
+            </div>
+          </section>
+
+          <section class="panel-section" data-section="events">
+            <p class="help">Google Calendar and Outlook export to `.ics`. Click a day to filter. Double-click a day to add.</p>
+            <div class="stack">
+              <label class="btn file-btn">Import ICS
+                <input id="ics-input" type="file" accept=".ics,.ical,text/calendar" />
+              </label>
+              <button class="btn btn-primary" id="add-event" type="button">Add event</button>
+            </div>
+            <div class="field" style="margin-top: 12px">
+              <div class="field-label" id="events-filter">Events</div>
+              <button class="btn btn-ghost" id="clear-day-filter" type="button">Show whole month</button>
+            </div>
+            <div class="event-list" id="event-list"></div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="print-root" class="print-root"></div>
+  <input id="project-input" class="sr-only" type="file" accept="application/json,.json" />
+
+  <dialog id="event-dialog">
+    <div class="dialog-head">
+      <h3>Event</h3>
+    </div>
+    <form class="dialog-body">
+      <div class="field">
+        <label for="event-title">Title</label>
+        <input id="event-title" type="text" required />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="event-start">Start</label>
+          <input id="event-start" type="date" required />
+        </div>
+        <div class="field">
+          <label for="event-end">End</label>
+          <input id="event-end" type="date" />
+        </div>
+      </div>
+      <label class="checkbox"><input id="event-allday" type="checkbox" checked /> All day</label>
+      <div class="field">
+        <label for="event-description">Notes</label>
+        <textarea id="event-description"></textarea>
+      </div>
+      <div class="field">
+        <label for="event-color">Color</label>
+        <input id="event-color" type="color" value="#c45f28" />
+        <div class="swatches" id="event-swatches"></div>
+      </div>
+    </form>
+    <div class="dialog-actions">
+      <button class="btn btn-danger" id="event-delete" type="button">Delete</button>
+      <span style="flex:1"></span>
+      <button class="btn" id="event-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="event-save" type="button">Save</button>
+    </div>
+  </dialog>
+
+  <dialog id="export-dialog">
+    <div class="dialog-head">
+      <h3>Print or save PDF</h3>
+    </div>
+    <div class="dialog-body">
+      <p class="help">Tabloid 11×17 in is the usual US hanging calendar. Print uses the browser dialog (choose “Save as PDF” if you want). Direct PDF download has no printer margins. In the print dialog, set margins to None and turn off headers.</p>
+      <div class="field">
+        <label for="export-scope">Pages</label>
+        <select id="export-scope">
+          <option value="year">All 12 months</option>
+          <option value="current">Current month only</option>
+        </select>
+      </div>
+      <label class="checkbox"><input id="export-hole" type="checkbox" /> Include hanging-hole punch guide</label>
+      <p class="help" id="export-status"></p>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn" id="export-cancel" type="button">Cancel</button>
+      <button class="btn" id="export-print" type="button">Print</button>
+      <button class="btn btn-primary" id="export-pdf" type="button">Save PDF</button>
+    </div>
+  </dialog>
+
+  <dialog id="crop-dialog">
+    <div class="dialog-head">
+      <h3>Crop image</h3>
+    </div>
+    <div class="dialog-body">
+      <div class="crop-stage">
+        <img alt="Crop source" />
+        <div class="crop-rect">
+          <span class="n" data-handle="n"></span>
+          <span class="s" data-handle="s"></span>
+          <span class="e" data-handle="e"></span>
+          <span class="w" data-handle="w"></span>
+          <span class="nw" data-handle="nw"></span>
+          <span class="ne" data-handle="ne"></span>
+          <span class="sw" data-handle="sw"></span>
+          <span class="se" data-handle="se"></span>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn" data-crop-cancel type="button">Cancel</button>
+      <button class="btn btn-primary" data-crop-apply type="button">Apply crop</button>
+    </div>
+  </dialog>
+
+  <script src="js/constants.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ics-parser.js"></script>
+  <script src="js/event-store.js"></script>
+  <script src="js/image-layer.js"></script>
+  <script src="js/overlay-layer.js"></script>
+  <script src="js/calendar-grid.js"></script>
+  <script src="js/page-view.js"></script>
+  <script src="js/crop-dialog.js"></script>
+  <script src="js/pdf-writer.js"></script>
+  <script src="js/canvas-renderer.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+:root {
+  --bg: #12110f;
+  --bg-raise: #1c1a17;
+  --bg-rail: #171512;
+  --bg-input: #241f1a;
+  --line: rgba(243, 234, 223, 0.08);
+  --line-strong: rgba(243, 234, 223, 0.16);
+  --ink: #f3eadf;
+  --ink-dim: #b7ab9c;
+  --ink-faint: #8a7f72;
+  --accent: #e0783d;
+  --accent-2: #d4b483;
+  --accent-press: #c45f28;
+  --danger: #d4564e;
+  --ok: #7d9b6a;
+  --paper: #f4eee4;
+  --paper-2: #ebe3d4;
+  --ink-paper: #2c261f;
+  --weekend: #8b4b32;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+  --font-ui: "Outfit", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --radius: 10px;
+  --toolbar-h: 56px;
+  --rail-left: 210px;
+  --rail-right: 300px;
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}

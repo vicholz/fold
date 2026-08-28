@@ -1,0 +1,280 @@
+.page {
+  position: relative;
+  background: var(--paper);
+  color: var(--ink-paper);
+  overflow: hidden;
+  user-select: none;
+}
+
+.page[data-size="letter"] {
+  width: 8.5in;
+  height: 11in;
+}
+
+.page[data-size="tabloid"] {
+  width: 11in;
+  height: 17in;
+}
+
+.page[data-size="a3"] {
+  width: 297mm;
+  height: 420mm;
+}
+
+.page.is-interactive {
+  box-shadow: var(--shadow);
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+}
+
+.panel-top {
+  top: 0;
+}
+
+.panel-bottom {
+  bottom: 0;
+}
+
+.image-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--paper-2);
+  touch-action: none;
+}
+
+.layer-image {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  user-select: none;
+  max-width: none;
+  max-height: none;
+}
+
+.image-frame.has-image .layer-image {
+  display: block;
+}
+
+.layer-empty {
+  position: absolute;
+  inset: 18%;
+  border: 1.5px dashed color-mix(in srgb, var(--ink-paper) 28%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: color-mix(in srgb, var(--ink-paper) 55%, transparent);
+  text-align: center;
+  pointer-events: none;
+}
+
+.layer-empty strong {
+  font-family: var(--font-display);
+  font-size: 18pt;
+  font-weight: 600;
+  color: var(--ink-paper);
+}
+
+.layer-empty span {
+  font-size: 10pt;
+}
+
+.image-frame.has-image .layer-empty {
+  display: none;
+}
+
+.panel-bottom .image-frame {
+  background: var(--paper);
+}
+
+.panel-bottom .layer-empty {
+  inset: auto;
+  top: 0.16in;
+  left: 18%;
+  right: 18%;
+  height: 0.7in;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.fold-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0;
+  border-top: 1px dashed rgba(44, 38, 31, 0.28);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.fold-line span {
+  position: absolute;
+  left: 50%;
+  top: -9px;
+  transform: translateX(-50%);
+  background: var(--paper);
+  color: rgba(44, 38, 31, 0.45);
+  font-size: 7pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0 8px;
+}
+
+.hanging-hole {
+  position: absolute;
+  top: 0.32in;
+  left: 50%;
+  width: 0.3in;
+  height: 0.3in;
+  margin-left: -0.15in;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3b362f, #12110f 70%);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.12),
+    0 1px 1px rgba(0, 0, 0, 0.18);
+  z-index: 7;
+  pointer-events: none;
+}
+
+.hanging-hole.is-guide {
+  background: transparent;
+  border: 0.6pt dashed #7a7368;
+  box-shadow: none;
+}
+
+.page:not(.show-hole) .hanging-hole {
+  display: none;
+}
+
+.calendar-body {
+  position: absolute;
+  inset: 0.42in 0.38in 0.32in;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.calendar-title {
+  font-family: var(--font-display);
+  font-size: 22pt;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.12in;
+  pointer-events: none;
+}
+
+.calendar-title.is-hidden {
+  display: none;
+}
+
+.dow-row,
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dow-row {
+  margin-bottom: 4px;
+}
+
+.dow-cell {
+  text-align: center;
+  font-size: 8pt;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+.day-grid {
+  flex: 1;
+  grid-template-rows: repeat(6, 1fr);
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+
+.day-cell {
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 4px 5px 3px;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.day-cell.is-empty {
+  pointer-events: none;
+}
+
+.day-num {
+  font-size: 10pt;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.day-cell.is-weekend .day-num {
+  font-weight: 600;
+}
+
+.day-cell.is-today .day-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #1a120c;
+}
+
+.event-chip {
+  font-size: 6.5pt;
+  line-height: 1.15;
+  padding: 1px 4px;
+  border-radius: 2px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.event-more {
+  font-size: 6.5pt;
+  opacity: 0.75;
+}
+
+.page[data-mode="photo"] .day-cell,
+.page[data-mode="overlay"] .day-cell {
+  pointer-events: none;
+}
+
+.page[data-mode="photo"] .text-box,
+.page[data-mode="calendar"] .text-box,
+.page[data-mode="events"] .text-box {
+  pointer-events: none;
+}
+
+.page[data-mode="photo"] .panel-top,
+.page[data-mode="calendar"] .panel-bottom {
+  cursor: grab;
+}
+
+.page[data-mode="photo"] .panel-top:active,
+.page[data-mode="calendar"] .panel-bottom:active {
+  cursor: grabbing;
+}
