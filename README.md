@@ -1,5 +1,7 @@
 # Fold
 
+https://vicholz.github.io/fold/
+
 A vanilla HTML, CSS, and JavaScript designer for **bi-fold hanging paper calendars**.
 
 Each month is one sheet: a photo on the top half, a calendar grid on the bottom, a crease in the middle, and an optional hanging-hole mark at the top. Design in the browser, then print or save a PDF at a real page size (Tabloid 11×17 in by default).
