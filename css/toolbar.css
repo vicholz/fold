@@ -34,6 +34,24 @@
   color: var(--accent);
 }
 
+.app-version {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.app-version a {
+  color: inherit;
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  text-underline-offset: 2px;
+}
+
+.app-version a:hover {
+  color: var(--accent);
+}
+
 .toolbar-group {
   display: flex;
   align-items: center;

@@ -21,7 +21,7 @@
   --font-ui: "Outfit", system-ui, sans-serif;
   --font-display: "Fraunces", Georgia, serif;
   --radius: 10px;
-  --toolbar-h: 56px;
+  --toolbar-h: 64px;
   --rail-left: 210px;
   --rail-right: 300px;
   --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
